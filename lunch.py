@@ -5,12 +5,12 @@ def select_desks(proportion_full, board_size):
     """Returns a set of desks as row,col tuples that have people in them"""
     num_full_desks = int(proportion_full * board_size * board_size)
     filled_desks = set()
-    you = board_size-1,random.randrange(board_size)
+    you = board_size - 1, random.randrange(board_size)
 
     while len(filled_desks) <= num_full_desks:
         row = random.randrange(board_size)
         col = random.randrange(board_size)
-        desk = row,col
+        desk = row, col
         if desk not in filled_desks:
             filled_desks.add(desk)
     return you, filled_desks
@@ -38,8 +38,76 @@ def pretty_print_room(room):
     print("\n".join(" ".join(str(col) for col in row) for row in room))
 
 
-def can_get_lunch(room):
-    """Returns True if given room supports getting lunch, otherwise False"""
-    # the exit is any desk in the front row
-    # how do I select the start desk?
-    pass
+def get_valid_moves(room, position):
+    """Given a room and current position, return a list of valid moved.
+
+    Note: returns desks in ascending order of getting our protagonist closer to
+    lunch.
+    """
+    board_size = len(room)
+    row, col = position
+    valid_moves = []
+
+    # move down
+    if col != 0 and not room[row][col - 1]:
+        valid_moves.append((row, col - 1))
+    # move left
+    if row != 0 and not room[row - 1][col]:
+        valid_moves.append((row - 1, col))
+    # move right
+    if row < board_size - 1 and not room[row + 1][col]:
+        valid_moves.append((row + 1, col))
+    # move up
+    if col < board_size - 1 and not room[row][col + 1]:
+        valid_moves.append((row, col + 1))
+
+    return valid_moves
+
+
+def can_get_lunch(room, position):
+    """Returns True if given room supports getting lunch, otherwise False
+
+    This works by recording the path of our protagonist's route taken so far,
+    keeping track of all valid moves available at each desk. If a position with
+    no valid moves to a new desk is reached, then the protagonist returns the
+    last position that had an un-yet explored desk available to it, and that
+    desk becomes the next position.
+
+    This is implemented by maintaining a list of state tuples. Each tuple
+    contains the current position in the route and a list of available positions
+    from that point. A state tuple takes the form of: (position, valid_moves),
+    where `position` is a `row,col` tuple and `valid_moves` is a list of
+    positions.
+
+    A new state tuple is appended to the list by removing the next available
+    desk that can be moved to (the last valid move in the move list in the
+    previous state) and generating the possible moves from there. If there are
+    no available moves, then a dead end has been reached and this state must be
+    removed by popping it off the list, leaving the next available desk from the
+    last choice point as the next position to move to.
+    """
+    # positions visited in the route
+    visited = set()
+
+    # initialise the first position
+    route = [("start", [position])]
+    while True:
+        # trying current position
+        if len(route[-1][1]) == 0:
+            # current state has no more valid moves; backtrack to last available
+            # choice point
+            route.pop()
+            if len(route) == 0:
+                # ran out of pathways; no lunch today
+                return False
+            position, valid_moves = route[-1]
+        else:
+            # try next available move
+            position = route[-1][1].pop()
+            visited.add(position)
+            valid_moves = get_valid_moves(room, position)
+            state = position, set(valid_moves) - visited
+            route.append(state)
+            if position[0] == 0:
+                # found the lunch truck!
+                return True
