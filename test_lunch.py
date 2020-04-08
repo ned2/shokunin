@@ -11,6 +11,7 @@ def test_room_data_structure():
     assert(isinstance(room, list))
     assert(isinstance(room[0], list))
 
+    
 # test that position gets only valid moves
     
 # test that solvable room is solvable
