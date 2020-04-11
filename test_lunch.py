@@ -17,7 +17,7 @@ def test_room_data_structure():
     assert isinstance(room, list)
     assert isinstance(room[0], list)
 
-    
+
 def test_room_integers():
     room = lunch.make_random_room(0.5)
     desks = itertools.chain.from_iterable(room)
@@ -68,6 +68,25 @@ def test_bottom_right_move():
     assert (8, 9) in moves
 
 
-# test that solvable room is solvable
+solvable_room = """
+1 0 0 1 0 1 1 0 0 0
+0 1 0 0 1 1 0 0 1 1
+1 1 1 0 0 0 0 1 1 1
+0 0 1 0 0 0 1 1 1 1
+0 0 0 1 0 0 1 0 0 1
+1 1 1 1 0 0 0 1 0 0
+0 0 0 0 0 0 1 0 1 1
+0 1 0 0 0 0 1 0 0 0
+1 0 0 0 0 1 1 1 1 0
+1 0 1 0 0 1 0 0 2 0
+"""
+    
+def test_can_find_lunch():
+    room = string_to_room(solvable_room)
+    assert(lunch.can_get_lunch(room, (9, 4)))
 
+
+def test_cant_find_lunch():
+    room = string_to_room(solvable_room)
+    assert(not lunch.can_get_lunch(room, (9, 9)))
 # test that unsolvable room is unsolvable
