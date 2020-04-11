@@ -7,6 +7,34 @@ def string_to_room(room_str):
     return [[int(cell) for cell in row.split()] for row in room_str.strip().split("\n")]
 
 
+# test that position gets only valid moves
+valid_moves_room = """
+0 1 0 0 0 0 0 0 0 1
+0 0 1 0 1 1 0 0 0 1
+0 0 1 1 1 1 0 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 1 1 1 0 1 0 0 1 1
+0 1 1 0 1 0 0 0 1 1
+0 0 0 0 0 1 1 1 1 1
+1 0 0 0 0 1 0 1 0 1
+0 1 0 1 0 1 1 0 0 0
+0 0 0 0 2 0 1 1 0 0
+"""
+
+
+solvable_room = """
+1 0 0 1 0 1 1 0 0 0
+0 1 0 0 1 1 0 0 1 1
+1 1 1 0 0 0 0 1 1 1
+0 0 1 0 0 0 1 1 1 1
+0 0 0 1 0 0 1 0 0 1
+1 1 1 1 0 0 0 1 0 0
+0 0 0 0 0 0 1 0 1 1
+0 1 0 0 0 0 1 0 0 0
+1 0 0 0 0 1 1 1 1 0
+1 0 1 0 0 1 0 0 2 0
+"""
+
 def test_room_is_square():
     room = lunch.make_random_room(0.5)
     assert (len(room)) == len(room[0])
@@ -22,21 +50,6 @@ def test_room_integers():
     room = lunch.make_random_room(0.5)
     desks = itertools.chain.from_iterable(room)
     assert all([isinstance(desk, int) for desk in desks])
-
-
-# test that position gets only valid moves
-valid_moves_room = """
-0 1 0 0 0 0 0 0 0 1
-0 0 1 0 1 1 0 0 0 1
-0 0 1 1 1 1 0 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 1 1 1 0 1 0 0 1 1
-0 1 1 0 1 0 0 0 1 1
-0 0 0 0 0 1 1 1 1 1
-1 0 0 0 0 1 0 1 0 1
-0 1 0 1 0 1 1 0 0 0
-0 0 0 0 2 0 1 1 0 0
-"""
 
 
 def test_can_move_everywhere():
@@ -67,19 +80,6 @@ def test_bottom_right_move():
     assert (9, 8) in moves
     assert (8, 9) in moves
 
-
-solvable_room = """
-1 0 0 1 0 1 1 0 0 0
-0 1 0 0 1 1 0 0 1 1
-1 1 1 0 0 0 0 1 1 1
-0 0 1 0 0 0 1 1 1 1
-0 0 0 1 0 0 1 0 0 1
-1 1 1 1 0 0 0 1 0 0
-0 0 0 0 0 0 1 0 1 1
-0 1 0 0 0 0 1 0 0 0
-1 0 0 0 0 1 1 1 1 0
-1 0 1 0 0 1 0 0 2 0
-"""
     
 def test_can_find_lunch():
     room = string_to_room(solvable_room)
@@ -89,4 +89,3 @@ def test_can_find_lunch():
 def test_cant_find_lunch():
     room = string_to_room(solvable_room)
     assert(not lunch.can_get_lunch(room, (9, 9)))
-# test that unsolvable room is unsolvable
