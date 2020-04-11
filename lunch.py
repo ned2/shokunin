@@ -49,17 +49,17 @@ def get_valid_moves(room, position):
     valid_moves = []
 
     # move down
-    if col != 0 and not room[row][col - 1]:
-        valid_moves.append((row, col - 1))
-    # move left
-    if row != 0 and not room[row - 1][col]:
-        valid_moves.append((row - 1, col))
-    # move right
     if row < board_size - 1 and not room[row + 1][col]:
         valid_moves.append((row + 1, col))
-    # move up
+    # move left
+    if col != 0 and not room[row][col - 1]:
+        valid_moves.append((row, col - 1))
+    # move right
     if col < board_size - 1 and not room[row][col + 1]:
         valid_moves.append((row, col + 1))
+    # move up
+    if row != 0 and not room[row - 1][col]:
+        valid_moves.append((row - 1, col))
 
     return valid_moves
 
