@@ -1,5 +1,7 @@
 import random
 
+import pandas as pd
+
 
 def select_desks(proportion_full, board_size):
     """Returns a set of desks as row,col tuples that have people in them"""
@@ -27,10 +29,10 @@ def make_room(filled_desks, board_size):
 
 def make_random_room(proportion_full, board_size=10):
     """Returns a representation of a room filled randomly with people"""
-    you, filled_desks = select_desks(proportion_full, board_size)
+    start, filled_desks = select_desks(proportion_full, board_size)
     room = make_room(filled_desks, board_size)
-    room[you[0]][you[1]] = 2
-    return room
+    room[start[0]][start[1]] = 2
+    return room, start
 
 
 def pretty_print_room(room):
@@ -111,3 +113,28 @@ def can_get_lunch(room, position):
             if position[0] == 0:
                 # found the lunch truck!
                 return True
+
+            
+def estimate_lunch_prob(proportion, samples=10000):
+    """Estimate the probability that lunch is found for a value of p"""
+    num_lunches = 0
+    for _i in range(samples):
+        room, start = make_random_room(proportion)
+        result = can_get_lunch(room, start)
+        if result:
+            num_lunches +=1
+    return num_lunches / samples
+
+
+def get_probabilities(increment=0.1, samples=10000):
+    """Estimate the probabilities for increments of p"""
+    results = []
+    proportions = []
+    proportion = 0
+    
+    while proportion <= 1.0:
+        result = estimate_lunch_prob(proportion, samples)
+        results.append(result)
+        proportions.append(proportion)
+        proportion += increment
+    return pd.DataFrame({"proportion": proportions, "probability": results})

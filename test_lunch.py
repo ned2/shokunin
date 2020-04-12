@@ -35,6 +35,11 @@ solvable_room = """
 1 0 1 0 0 1 0 0 2 0
 """
 
+
+# TODO: add test for validating the right number of desks
+# are assigned for different values of p
+
+
 def test_room_is_square():
     room = lunch.make_random_room(0.5)
     assert (len(room)) == len(room[0])
