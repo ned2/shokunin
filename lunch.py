@@ -105,14 +105,15 @@ class Room:
         if position is None:
             position = self.start
 
-        # positions visited in the route
+        # positions visited so far in the route
         visited = set()
 
-        # initialise the first position
+        # initialise first position with a dummy start position
         route = [("start", [position])]
+
         while True:
-            # trying current position
-            if len(route[-1][1]) == 0:
+            next_moves = route[-1][1]
+            if len(next_moves) == 0:
                 # current state has no more valid moves; backtrack to last available
                 # choice point
                 route.pop()
@@ -121,14 +122,18 @@ class Room:
                     return None
             else:
                 # try next available move
-                position = route[-1][1].pop()
+                position = next_moves.pop()
+                valid_moves = [
+                    desk
+                    for desk in self._get_valid_moves(position)
+                    if desk not in visited
+                ]
+                route.append((position, valid_moves))
                 visited.add(position)
-                valid_moves = self._get_valid_moves(position)
-                state = position, [desk for desk in valid_moves if desk not in visited]
-                route.append(state)
                 if position[0] == 0:
-                    # found the lunch truck! return the route taken
-                    return [state[0] for state in route[1:]]
+                    # found the lunch truck! return the route taken, skipping
+                    # the dummy start position
+                    return [position for position, _moves in route[1:]]
 
     def to_str(self, show_solution=False):
         """Convert a room into a printed string"""
