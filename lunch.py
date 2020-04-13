@@ -3,6 +3,8 @@ from itertools import chain
 
 import pandas as pd
 
+SEEN_ROOMS = {}
+
 
 class Room:
 
@@ -19,17 +21,21 @@ class Room:
             # create a random desk layout and start position
             self.desks, self.start = self._make_random_room()
 
-        self.find_solution()
+        if self.desks in SEEN_ROOMS:
+            self.solution = SEEN_ROOMS[self.desks]
+        else:
+            self.solution = self._find_lunch_solution()
+            SEEN_ROOMS[self.desks] = self.solution
 
-    def find_solution(self):
-        self.solution = self._find_lunch_solution()
-        self.found_lunch = False if self.solution is None else True
-
+    @property
+    def found_lunch(self):
+        return False if self.solution is None else True
+        
     def _make_random_room(self):
         """Returns a representation of a room filled randomly with people"""
         start, filled_desks = self._select_desks()
-        room = self._make_room(filled_desks)
-        room[start[0]][start[1]] = 2
+        room = self._make_room(filled_desks, start)
+        # room[start[0]][start[1]] = self.protagonist
         return room, start
 
     def _select_desks(self):
@@ -46,15 +52,21 @@ class Room:
                 filled_desks.add(desk)
         return start, filled_desks
 
-    def _make_room(self, filled_desks):
+    def _make_room(self, filled_desks, start):
         """Returns a filled room as a list of lists"""
-        room = []
-        for row in range(self.room_size):
-            row = [
-                1 if (row, col) in filled_desks else 0 for col in range(self.room_size)
-            ]
-            room.append(row)
-        return room
+
+        def get_cell_value(position):
+            if position == start:
+                return 2
+            elif position in filled_desks:
+                return 1
+            else:
+                return 0
+
+        return tuple(
+            tuple(get_cell_value((row, col)) for col in range(self.room_size))
+            for row in range(self.room_size)
+        )
 
     def _get_valid_moves(self, position):
         """Given a room and current position, return a list of valid moved.
@@ -111,7 +123,6 @@ class Room:
         # initialise the first position
         route = [("start", [position])]
         while True:
-            # trying current position
             if len(route[-1][1]) == 0:
                 # current state has no more valid moves; backtrack to last available
                 # choice point
@@ -122,10 +133,13 @@ class Room:
             else:
                 # try next available move
                 position = route[-1][1].pop()
+                valid_moves = [
+                    desk
+                    for desk in self._get_valid_moves(position)
+                    if desk not in visited
+                ]
+                route.append((position, valid_moves))
                 visited.add(position)
-                valid_moves = self._get_valid_moves(position)
-                state = position, [desk for desk in valid_moves if desk not in visited]
-                route.append(state)
                 if position[0] == 0:
                     # found the lunch truck! return the route taken
                     return [state[0] for state in route[1:]]
@@ -143,9 +157,10 @@ class Room:
     @classmethod
     def from_str(cls, room_str):
         """Create a Room from a saved string representation"""
-        desks = [
-            [int(cell) for cell in row.split()] for row in room_str.strip().split("\n")
-        ]
+        desks = tuple(
+            tuple(int(cell) for cell in row.split())
+            for row in room_str.strip().split("\n")
+        )
 
         for row_index, row in enumerate(desks):
             for col_index, desk in enumerate(row):
@@ -170,6 +185,7 @@ class Room:
 def estimate_lunch_prob(proportion, samples=10000):
     """Estimate the probability that lunch is found for a value of p"""
     num_lunches = 0
+
     for _i in range(samples):
         room = Room(proportion)
         if room.found_lunch:

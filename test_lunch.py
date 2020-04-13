@@ -62,8 +62,8 @@ def test_room_is_square():
 
 def test_room_data_structure():
     room = Room(0.5)
-    assert isinstance(room.desks, list)
-    assert isinstance(room.desks[0], list)
+    assert isinstance(room.desks, tuple)
+    assert isinstance(room.desks[0], tuple)
 
 
 def test_room_integers():
