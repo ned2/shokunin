@@ -19,6 +19,9 @@ class Room:
             # create a random desk layout and start position
             self.desks, self.start = self._make_random_room()
 
+        self.find_solution()
+
+    def find_solution(self):
         self.solution = self._find_lunch_solution()
         self.found_lunch = False if self.solution is None else True
 
@@ -122,7 +125,7 @@ class Room:
                 position = route[-1][1].pop()
                 visited.add(position)
                 valid_moves = self._get_valid_moves(position)
-                state = position, set(valid_moves) - visited
+                state = position, [desk for desk in valid_moves if desk not in visited]
                 route.append(state)
                 if position[0] == 0:
                     # found the lunch truck! return the route taken

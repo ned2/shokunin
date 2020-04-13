@@ -31,6 +31,17 @@ solvable_room = """
 1 0 1 0 0 1 0 0 2 0
 """
 
+solvable_room2 = """
+1 0 1 1 1 0 1 0 1 0
+1 0 1 1 0 0 1 1 0 1
+0 0 0 1 0 0 1 0 0 0
+0 1 1 0 0 1 1 0 1 0
+0 1 0 0 0 0 0 1 0 0
+1 1 0 0 1 0 0 1 0 1
+1 0 0 0 0 0 0 1 0 0
+1 0 0 1 0 0 1 1 1 1
+1 0 0 0 1 0 0 1 0 0
+0 0 2 0 0 1 1 1 1 0"""
 
 # TODO: add test for validating the right number of desks
 # are assigned for different values of p
@@ -97,4 +108,9 @@ def test_serialise_deserialise_room():
     room_str = room.to_str()
     new_room = Room.from_str(room_str)
     assert new_room.to_str() == room_str
+
     
+def test_short_solution():
+    room = Room.from_str(solvable_room2)
+    assert len(room.solution) == 13
+
