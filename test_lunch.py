@@ -84,12 +84,12 @@ def test_bottom_right_move():
 
 def test_can_find_lunch():
     room = Room.from_str(solvable_room)
-    assert room._find_lunch_solution((9, 4))
+    assert room._find_lunch_solution((9, 4)) is not None
 
 
 def test_cant_find_lunch():
     room = Room.from_str(solvable_room)
-    assert not room._find_lunch_solution((9, 9))
+    assert room._find_lunch_solution((9, 9)) is None
 
     
 def test_serialise_deserialise_room():

@@ -132,7 +132,8 @@ class Room:
         """Convert a room into a printed string"""
         desks = self.desks
         if show_solution and self.found_lunch:
-            desks = self.desks.copy()
+            # copy the desks data structure first
+            desks = [[col for col in row] for row in self.desks]
             for row, col in self.solution[1:]:
                 desks[row][col] = "*"
         return "\n".join(" ".join(str(col) for col in row) for row in desks)
