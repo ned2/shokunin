@@ -17,34 +17,19 @@ class Room:
 
         if self.desks is None or self.start is None:
             # create a random desk layout and start position
-            self.desks, self.start = self.make_random_room()
+            self.desks, self.start = self._make_random_room()
 
-    @classmethod
-    def from_str(cls, room_str):
-        """Create a Room from a saved string representation"""
-        desks = [
-            [int(cell) for cell in row.split()] for row in room_str.strip().split("\n")
-        ]
-        
-        for row_index, row in enumerate(desks):
-            for col_index, desk in enumerate(row):
-                if desk == cls.protagonist:
-                    start = row_index, col_index
+        self.solution = self._find_lunch_solution()
+        self.found_lunch = False if self.solution is None else True
 
-        room_size = len(desks)
-        proportion_full = (
-            sum(bool(desk) for desk in chain.from_iterable(desks)) / room_size ** 2
-        )
-        return cls(proportion_full, room_size=room_size, desks=desks, start=start)
-
-    def make_random_room(self):
+    def _make_random_room(self):
         """Returns a representation of a room filled randomly with people"""
-        start, filled_desks = self.select_desks()
-        room = self.make_room(filled_desks)
+        start, filled_desks = self._select_desks()
+        room = self._make_room(filled_desks)
         room[start[0]][start[1]] = 2
         return room, start
 
-    def select_desks(self):
+    def _select_desks(self):
         """Returns a set of desks as row,col tuples that have people in them"""
         num_full_desks = int(self.proportion_full * self.room_size ** 2)
         filled_desks = set()
@@ -58,7 +43,7 @@ class Room:
                 filled_desks.add(desk)
         return start, filled_desks
 
-    def make_room(self, filled_desks):
+    def _make_room(self, filled_desks):
         """Returns a filled room as a list of lists"""
         room = []
         for row in range(self.room_size):
@@ -68,7 +53,7 @@ class Room:
             room.append(row)
         return room
 
-    def get_valid_moves(self, position):
+    def _get_valid_moves(self, position):
         """Given a room and current position, return a list of valid moved.
 
         Note: returns desks in ascending order of getting our protagonist closer to
@@ -92,7 +77,7 @@ class Room:
 
         return valid_moves
 
-    def can_get_lunch(self, position=None):
+    def _find_lunch_solution(self, position=None):
         """Returns True if given room supports getting lunch, otherwise False
 
         This works by recording the path of our protagonist's route taken so far,
@@ -130,25 +115,54 @@ class Room:
                 route.pop()
                 if len(route) == 0:
                     # ran out of pathways; no lunch today
-                    return False
+                    return None
                 position, valid_moves = route[-1]
             else:
                 # try next available move
                 position = route[-1][1].pop()
                 visited.add(position)
-                valid_moves = self.get_valid_moves(position)
+                valid_moves = self._get_valid_moves(position)
                 state = position, set(valid_moves) - visited
                 route.append(state)
                 if position[0] == 0:
-                    # found the lunch truck!
-                    return True
+                    # found the lunch truck! return the route taken
+                    return [state[0] for state in route[1:]]
 
     def to_str(self):
         """Convert a room into a printed string"""
-        return "\n".join(" ".join(str(col) for col in row) for row in self.desks)
+        if self.found_lunch:
+            desks = self.desks.copy()
+            for row, col in self.solution[1:]:
+                desks[row][col] = "*"
+        else:
+            desks = self.desks
+        return "\n".join(" ".join(str(col) for col in row) for row in desks)
+
+    @classmethod
+    def from_str(cls, room_str):
+        """Create a Room from a saved string representation"""
+        desks = [
+            [int(cell) for cell in row.split()] for row in room_str.strip().split("\n")
+        ]
+
+        for row_index, row in enumerate(desks):
+            for col_index, desk in enumerate(row):
+                if desk == cls.protagonist:
+                    start = row_index, col_index
+
+        room_size = len(desks)
+        proportion_full = (
+            sum(bool(desk) for desk in chain.from_iterable(desks)) / room_size ** 2
+        )
+        return cls(proportion_full, room_size=room_size, desks=desks, start=start)
 
     def __str__(self):
         return self.to_str()
+
+    def __repr__(self):
+        return (
+            f"Room(proportion_full={self.proportion_full}, room_size={self.room_size})"
+        )
 
 
 def estimate_lunch_prob(proportion, samples=10000):
