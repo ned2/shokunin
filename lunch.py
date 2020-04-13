@@ -19,24 +19,6 @@ class Room:
             # create a random desk layout and start position
             self.desks, self.start = self.make_random_room()
 
-    @classmethod
-    def from_str(cls, room_str):
-        """Create a Room from a saved string representation"""
-        desks = [
-            [int(cell) for cell in row.split()] for row in room_str.strip().split("\n")
-        ]
-        
-        for row_index, row in enumerate(desks):
-            for col_index, desk in enumerate(row):
-                if desk == cls.protagonist:
-                    start = row_index, col_index
-
-        room_size = len(desks)
-        proportion_full = (
-            sum(bool(desk) for desk in chain.from_iterable(desks)) / room_size ** 2
-        )
-        return cls(proportion_full, room_size=room_size, desks=desks, start=start)
-
     def make_random_room(self):
         """Returns a representation of a room filled randomly with people"""
         start, filled_desks = self.select_desks()
@@ -147,8 +129,31 @@ class Room:
         """Convert a room into a printed string"""
         return "\n".join(" ".join(str(col) for col in row) for row in self.desks)
 
+    @classmethod
+    def from_str(cls, room_str):
+        """Create a Room from a saved string representation"""
+        desks = [
+            [int(cell) for cell in row.split()] for row in room_str.strip().split("\n")
+        ]
+
+        for row_index, row in enumerate(desks):
+            for col_index, desk in enumerate(row):
+                if desk == cls.protagonist:
+                    start = row_index, col_index
+
+        room_size = len(desks)
+        proportion_full = (
+            sum(bool(desk) for desk in chain.from_iterable(desks)) / room_size ** 2
+        )
+        return cls(proportion_full, room_size=room_size, desks=desks, start=start)
+
     def __str__(self):
         return self.to_str()
+
+    def __repr__(self):
+        return (
+            f"Room(proportion_full={self.proportion_full}, room_size={self.room_size})"
+        )
 
 
 def estimate_lunch_prob(proportion, samples=10000):
