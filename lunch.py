@@ -92,7 +92,7 @@ class Room:
         This is implemented by maintaining a list of state tuples. Each tuple
         contains the current position in the route and a list of available positions
         from that point. A state tuple takes the form of: (position, valid_moves),
-        where `position` is a `row,col` tuple and `valid_moves` is a list of
+        where `position` is a `(row,col)` tuple and `valid_moves` is a list of
         positions.
 
         A new state tuple is appended to the list by removing the next available
@@ -119,7 +119,6 @@ class Room:
                 if len(route) == 0:
                     # ran out of pathways; no lunch today
                     return None
-                position, valid_moves = route[-1]
             else:
                 # try next available move
                 position = route[-1][1].pop()
