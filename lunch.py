@@ -19,11 +19,11 @@ class Room:
             # create a random desk layout and start position
             self.desks, self.start = self._make_random_room()
 
-        self.find_solution()
-
-    def find_solution(self):
         self.solution = self._find_lunch_solution()
-        self.found_lunch = False if self.solution is None else True
+
+    @property
+    def found_lunch(self):
+        return False if self.solution is None else True
 
     def _make_random_room(self):
         """Returns a representation of a room filled randomly with people"""
