@@ -128,14 +128,13 @@ class Room:
                     # found the lunch truck! return the route taken
                     return [state[0] for state in route[1:]]
 
-    def to_str(self):
+    def to_str(self, show_solution=False):
         """Convert a room into a printed string"""
-        if self.found_lunch:
+        desks = self.desks
+        if show_solution and self.found_lunch:
             desks = self.desks.copy()
             for row, col in self.solution[1:]:
                 desks[row][col] = "*"
-        else:
-            desks = self.desks
         return "\n".join(" ".join(str(col) for col in row) for row in desks)
 
     @classmethod
@@ -157,7 +156,7 @@ class Room:
         return cls(proportion_full, room_size=room_size, desks=desks, start=start)
 
     def __str__(self):
-        return self.to_str()
+        return self.to_str(show_solution=True)
 
     def __repr__(self):
         return (

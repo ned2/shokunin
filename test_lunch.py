@@ -55,7 +55,7 @@ def test_room_integers():
 
 def test_can_move_everywhere():
     room = Room.from_str(valid_moves_room)
-    moves = room.get_valid_moves((7, 2))
+    moves = room._get_valid_moves((7, 2))
     assert (6, 2) in moves
     assert (8, 2) in moves
     assert (7, 1) in moves
@@ -64,32 +64,32 @@ def test_can_move_everywhere():
 
 def test_cant_move_anywhere():
     room = Room.from_str(valid_moves_room)
-    moves = room.get_valid_moves((7, 6))
+    moves = room._get_valid_moves((7, 6))
     assert len(moves) == 0
 
 
 def test_bottom_left_move():
     room = Room.from_str(valid_moves_room)
-    moves = room.get_valid_moves((9, 0))
+    moves = room._get_valid_moves((9, 0))
     assert (9, 1) in moves
     assert (8, 0) in moves
 
 
 def test_bottom_right_move():
     room = Room.from_str(valid_moves_room)
-    moves = room.get_valid_moves((9, 9))
+    moves = room._get_valid_moves((9, 9))
     assert (9, 8) in moves
     assert (8, 9) in moves
 
 
 def test_can_find_lunch():
     room = Room.from_str(solvable_room)
-    assert room.can_get_lunch((9, 4))
+    assert room._find_lunch_solution((9, 4))
 
 
 def test_cant_find_lunch():
     room = Room.from_str(solvable_room)
-    assert not room.can_get_lunch((9, 9))
+    assert not room._find_lunch_solution((9, 9))
 
     
 def test_serialise_deserialise_room():
