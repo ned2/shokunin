@@ -38,7 +38,7 @@ class Room:
         filled_desks = set()
         start = self.room_size - 1, random.randrange(self.room_size)
 
-        while len(filled_desks) <= num_full_desks:
+        while len(filled_desks) < num_full_desks:
             row = random.randrange(self.room_size)
             col = random.randrange(self.room_size)
             desk = row, col

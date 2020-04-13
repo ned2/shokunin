@@ -55,10 +55,6 @@ not_solvable_room = """
 0 0 0 0 0 0 0 0 2 0"""
 
 
-# TODO: add test for validating the right number of desks
-# are assigned for different values of p
-
-
 def test_room_is_square():
     room = Room(0.5)
     assert len(room.desks) == len(room.desks[0])
@@ -76,6 +72,16 @@ def test_room_integers():
     assert all([isinstance(desk, int) for desk in desks])
 
 
+def test_no_desks_generated():
+    room = Room(0)
+    assert len(room._select_desks()[1]) == 0
+
+
+def test_10_desks_generated():
+    room = Room(0.1, room_size=10)
+    assert len(room._select_desks()[1]) == 10
+
+    
 def test_can_move_everywhere():
     room = Room.from_str(valid_moves_room)
     moves = room._get_valid_moves((7, 2))
@@ -109,7 +115,7 @@ def test_cant_find_lunch_pos():
     room = Room.from_str(solvable_room)
     assert room._find_lunch_solution((9, 9)) is None
 
-    
+
 def test_can_find_lunch_pos():
     room = Room.from_str(solvable_room)
     assert room._find_lunch_solution((9, 4)) is not None
@@ -122,7 +128,7 @@ def test_can_find_lunch():
 
 def test_cant_find_lunch():
     room = Room.from_str(not_solvable_room)
-    assert not room.found_lunch    
+    assert not room.found_lunch
 
 
 def test_serialise_deserialise_room():
