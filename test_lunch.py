@@ -17,7 +17,6 @@ valid_moves_room = """
 0 0 0 0 2 0 1 1 0 0
 """
 
-
 solvable_room = """
 1 0 0 1 0 1 1 0 0 0
 0 1 0 0 1 1 0 0 1 1
@@ -28,7 +27,7 @@ solvable_room = """
 0 0 0 0 0 0 1 0 1 1
 0 1 0 0 0 0 1 0 0 0
 1 0 0 0 0 1 1 1 1 0
-1 0 1 0 0 1 0 0 2 0
+1 0 1 2 0 1 0 0 0 0
 """
 
 solvable_room2 = """
@@ -42,6 +41,19 @@ solvable_room2 = """
 1 0 0 1 0 0 1 1 1 1
 1 0 0 0 1 0 0 1 0 0
 0 0 2 0 0 1 1 1 1 0"""
+
+not_solvable_room = """
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 2 0"""
+
 
 # TODO: add test for validating the right number of desks
 # are assigned for different values of p
@@ -93,24 +105,33 @@ def test_bottom_right_move():
     assert (8, 9) in moves
 
 
-def test_can_find_lunch():
-    room = Room.from_str(solvable_room)
-    assert room._find_lunch_solution((9, 4)) is not None
-
-
-def test_cant_find_lunch():
+def test_cant_find_lunch_pos():
     room = Room.from_str(solvable_room)
     assert room._find_lunch_solution((9, 9)) is None
 
     
+def test_can_find_lunch_pos():
+    room = Room.from_str(solvable_room)
+    assert room._find_lunch_solution((9, 4)) is not None
+
+
+def test_can_find_lunch():
+    room = Room.from_str(solvable_room)
+    assert room.found_lunch
+
+
+def test_cant_find_lunch():
+    room = Room.from_str(not_solvable_room)
+    assert not room.found_lunch    
+
+
 def test_serialise_deserialise_room():
     room = Room(0.6)
     room_str = room.to_str()
     new_room = Room.from_str(room_str)
     assert new_room.to_str() == room_str
 
-    
+
 def test_short_solution():
     room = Room.from_str(solvable_room2)
     assert len(room.solution) == 13
-

@@ -172,9 +172,8 @@ def estimate_lunch_prob(proportion, samples=10000):
     """Estimate the probability that lunch is found for a value of p"""
     num_lunches = 0
     for _i in range(samples):
-        room, start = make_random_room(proportion)
-        result = can_get_lunch(room, start)
-        if result:
+        room = Room(proportion)
+        if room.found_lunch:
             num_lunches += 1
     return num_lunches / samples
 
