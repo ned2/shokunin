@@ -4,6 +4,13 @@ from itertools import chain
 import pandas as pd
 
 
+# Number of samples to run for estimating probability of finding lunch
+DEFAULT_SAMPLES = 10000
+
+# Amount to increment p by at each stage
+DEFAULT_INCREMENTS = 0.1
+
+
 class Room:
 
     # value that the protagonist gets in the room data structure
@@ -172,7 +179,7 @@ class Room:
         )
 
 
-def estimate_lunch_prob(proportion, samples=10000):
+def estimate_lunch_prob(proportion, samples=DEFAULT_SAMPLES):
     """Estimate the probability that lunch is found for a value of p"""
     num_lunches = 0
     for _i in range(samples):
@@ -182,7 +189,7 @@ def estimate_lunch_prob(proportion, samples=10000):
     return num_lunches / samples
 
 
-def get_probabilities(increment=0.1, samples=10000):
+def get_probabilities(increment=DEFAULT_INCREMENTS, samples=DEFAULT_SAMPLES):
     """Estimate the probabilities for increments of p"""
     results = []
     proportions = []
