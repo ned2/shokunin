@@ -62,5 +62,5 @@ setup(
     version=about["__version__"],
     packages=find_packages("src"),
     package_dir={"": "src"},
-    #entry_points={"console_scripts": ["luncher.cli:main"]},
+    entry_points={"console_scripts": ["luncher=luncher.cli:main"]},
 )
