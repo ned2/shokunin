@@ -1,6 +1,6 @@
 from itertools import chain
 
-from lunch import Room
+from luncher import Room
 
 
 # test that position gets only valid moves
