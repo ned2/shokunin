@@ -69,7 +69,7 @@ The `Room` class within `luncher.py` represents a randomly generated office. See
 2 * 1 0 1 0 0 0 0 0
 ```
 
-### Randomly generated room with p=0.4 that does not supports finding lunch:
+### Randomly generated room with p=0.4 that does not support finding lunch:
 
 ```
 0 0 0 0 0 1 0 1 1 1
