@@ -3,6 +3,9 @@ from itertools import chain
 
 import pandas as pd
 
+#
+# Default parameter values
+#
 
 # Number of samples to run for estimating probability of finding lunch
 DEFAULT_SAMPLES = 10000
@@ -10,13 +13,16 @@ DEFAULT_SAMPLES = 10000
 # Amount to increment p by at each stage
 DEFAULT_INCREMENTS = 0.1
 
+# The size of a wall. Rooms are square, so total desks == ROOM_SIZE ** 2
+ROOM_SIZE = 10
+
 
 class Room:
 
     # value that the protagonist gets in the room data structure
     protagonist = 2
 
-    def __init__(self, proportion_full, room_size=10, desks=None, start=None):
+    def __init__(self, proportion_full, room_size=ROOM_SIZE, desks=None, start=None):
         self.proportion_full = proportion_full
         self.room_size = room_size
         self.desks = desks
@@ -179,24 +185,26 @@ class Room:
         )
 
 
-def estimate_lunch_prob(proportion, samples=DEFAULT_SAMPLES):
+def estimate_lunch_prob(proportion, samples=DEFAULT_SAMPLES, room_size=ROOM_SIZE):
     """Estimate the probability that lunch is found for a value of p"""
     num_lunches = 0
     for _i in range(samples):
-        room = Room(proportion)
+        room = Room(proportion, room_size=room_size)
         if room.found_lunch:
             num_lunches += 1
     return num_lunches / samples
 
 
-def get_probabilities(increment=DEFAULT_INCREMENTS, samples=DEFAULT_SAMPLES):
-    """Estimate the probabilities for increments of p"""
+def get_probabilities(
+    increment=DEFAULT_INCREMENTS, samples=DEFAULT_SAMPLES, room_size=ROOM_SIZE
+):
+    """Estimate the probabily of finding lunch for increments of p"""
     results = []
     proportions = []
     proportion = 0
 
     while proportion <= 1.0:
-        result = estimate_lunch_prob(proportion, samples)
+        result = estimate_lunch_prob(proportion, samples=samples, room_size=room_size)
         results.append(result)
         proportions.append(proportion)
         proportion += increment
