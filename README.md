@@ -10,17 +10,20 @@ To install `luncher`, create a Python 3.6+ virtual environment and then run the 
 
 ## Running
 
-Installing the `luncher` package will install the `luncher` executable into your `PATH`. This command line tool has two commands you can interact with: `solve-one` for estimating the probability for finding lnunch for a given `p` value and `solve-all` for estimating probabilities for different increments of p between 0 and 1:
+Installing the `luncher` package will install the `luncher` executable into your `PATH`. This command line tool provides two commands you can interact with:
 
 ```
-luncher solve-one 0.3 
+Usage: luncher [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  solve-all  Get probability estimates for different increments of `p`.
+  solve-one  Estimate probability of finding lunch for a given value of `p`.
 ```
 
-```
-luncher solve-all 
-```
-
-Both commands can take the arguments 
+Both commands can take the arguments `--room-size` and `--samples`, which allows solutions to be explored for different sized offices and 
 
 ## Tests
 
