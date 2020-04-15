@@ -8,7 +8,7 @@ import pandas as pd
 #
 
 # Number of samples to run for estimating probability of finding lunch
-DEFAULT_SAMPLES = 10000
+DEFAULT_SAMPLES = 1_000_000
 
 # Amount to increment p by at each stage
 DEFAULT_INCREMENTS = 0.1
