@@ -23,7 +23,7 @@ Commands:
   solve-one  Estimate probability of finding lunch for a given value of `p`.
 ```
 
-Both commands can take the arguments `--room-size` and `--samples`, which allows solutions to be explored for different sized offices and with different numbers of randomly generated offices, respectively. The `solve-all`command also takes an --increments parameter, allowing you to change the value `p` is incremented by (and thus the number of probabilitues generated).
+Both commands can take the arguments `--room-size` and `--samples`, which allows solutions to be explored for different sized offices and with different numbers of randomly generated offices, respectively. The `solve-all`command also takes an `--increments` parameter, allowing you to change the value that `p` is incremented by (and thus the number of probabilitues generated).
 
 ## Tests
 
@@ -50,7 +50,7 @@ Number of samples for each p: 1000000
 ```
 _Note: that this output was produced by the `solve-all` command described above._
 
-The methodology taken in this solution is to randomly generate populated offices for given `p` values and test whether each generated office permits lunch to be found. The estimated probability is then simply the number of lunch-obtianing offices diovided by the total number of smapled offices. 
+The methodology taken in this solution is to randomly generate populated offices for given `p` values and test whether each generated office permits lunch to be found. The estimated probability is then simply the number of lunch-obtianing offices divided by the total number of sampled offices. 
 
 The `Room` class within `luncher.py` represents a randomly generated office. See the method `_find_lunch_solution` for the algorthim for testing whether a randomly generated room supports finding lunch. Its docstring contains a detailed description of how the algorithm works.
 
