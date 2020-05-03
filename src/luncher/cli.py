@@ -1,8 +1,11 @@
 """Click command line script for accessing luncher solutions"""
+import cProfile
+import pstats
+from functools import partial
 
 import click
 
-from .utils import timing
+from .utils import Timer
 from .lunch import (
     get_probabilities,
     estimate_lunch_prob,
@@ -22,10 +25,21 @@ def main():
 @click.option("--samples", default=DEFAULT_SAMPLES, help="The number of populated offices to simulate.")
 @click.option("--room-size", default=ROOM_SIZE, help="The length in desks of a (square) office.")
 @click.option("--time/--no-time", default=False, help="Causes this command to be timed.")
-def solve_one(proportion, samples, room_size, time):
-    with timing(echo=time, echo_func=click.echo):
-        prob = estimate_lunch_prob(proportion, samples)
-        click.echo(f"Probability of finding lunch in a {room_size}x{room_size} room: {prob:.3f}")
+@click.option("--profile/--no-profile", default=False, help="Causes this command to be profiled.")
+def solve_one(proportion, samples, room_size, time, profile):
+    func = partial(estimate_lunch_prob, proportion, samples)
+    if time:
+        with Timer() as t:
+            prob = func()
+        click.echo(f"Code executed in {t.ellapsed:.2f} seconds")
+    elif profile:
+        with cProfile.Profile() as pr:
+            prob = func()
+        ps = pstats.Stats(pr).sort_stats(pstats.SortKey.CUMULATIVE)
+        ps.print_stats()
+    else:
+        prob = func()        
+    click.echo(f"Probability of finding lunch in a {room_size}x{room_size} room: {prob:.3f}")
 
 
 @main.command(name="solve-all", help="Get probability estimates for different increments of `p`.")
