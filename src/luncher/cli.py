@@ -1,11 +1,10 @@
 """Click command line script for accessing luncher solutions"""
-import cProfile
 import pstats
 from functools import partial
 
 import click
 
-from .utils import Timer
+from .utils import Timer, Profiler
 from .lunch import (
     get_probabilities,
     estimate_lunch_prob,
@@ -29,13 +28,13 @@ def main():
 def solve_one(proportion, samples, room_size, time, profile):
     func = partial(estimate_lunch_prob, proportion, samples)
     if time:
-        with Timer() as t:
+        with Timer() as timer:
             prob = func()
-        click.echo(f"Code executed in {t.ellapsed:.2f} seconds")
+        click.echo(f"Code executed in {timer.ellapsed:.2f} seconds")
     elif profile:
-        with cProfile.Profile() as pr:
+        with Profiler() as profiler:
             prob = func()
-        ps = pstats.Stats(pr).sort_stats(pstats.SortKey.CUMULATIVE)
+        ps = pstats.Stats(profiler).sort_stats("cumulative")
         ps.print_stats()
     else:
         prob = func()        

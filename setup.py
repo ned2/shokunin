@@ -13,7 +13,7 @@ AUTHOR = "Ned Letcher"
 AUTHOR_EMAIL = "ned at nedned dot net"
 LICENSE = "MIT"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "0.1.0"  # get this from __version__.py
+VERSION = "0.1.0"
 
 
 # What packages are required for this module to be executed?
@@ -40,7 +40,7 @@ except FileNotFoundError:
 about = {}
 if not VERSION:
     with open(
-        os.path.join(here, "src", "{{ cookiecutter.project_slug }}", "__version__.py")
+        os.path.join(here, "src", "luncher", "__version__.py")
     ) as f:
         exec(f.read(), about)
 else:

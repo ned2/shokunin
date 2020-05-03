@@ -1,0 +1,12 @@
+luncher solve-one .4 --samples 100000 --time
+
+** Baseline run: code unchanged from submission except for --time and --profile commands added
+20.665
+
+** No optimisations, running with pypy:
+5.394 seconds
+
+** Using custom random.random and cPython
+
+
+** Using Numpy to pre-generate random numbers as needeed 
