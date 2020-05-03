@@ -2,6 +2,7 @@
 
 import click
 
+from .utils import timing
 from .lunch import (
     get_probabilities,
     estimate_lunch_prob,
@@ -20,9 +21,11 @@ def main():
 @click.argument("proportion", type=float)
 @click.option("--samples", default=DEFAULT_SAMPLES, help="The number of populated offices to simulate.")
 @click.option("--room-size", default=ROOM_SIZE, help="The length in desks of a (square) office.")
-def solve_one(proportion, samples, room_size):
-    prob = estimate_lunch_prob(proportion, samples)
-    click.echo(f"Probability of finding lunch in a {room_size}x{room_size} room: {prob:.3f}")
+@click.option("--time/--no-time", default=False, help="Causes this command to be timed.")
+def solve_one(proportion, samples, room_size, time):
+    with timing(echo=time, echo_func=click.echo):
+        prob = estimate_lunch_prob(proportion, samples)
+        click.echo(f"Probability of finding lunch in a {room_size}x{room_size} room: {prob:.3f}")
 
 
 @main.command(name="solve-all", help="Get probability estimates for different increments of `p`.")
